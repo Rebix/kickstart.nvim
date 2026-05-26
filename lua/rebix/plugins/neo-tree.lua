@@ -6,7 +6,6 @@ local plugins = {
   'https://github.com/nvim-lua/plenary.nvim',
   'https://github.com/MunifTanjim/nui.nvim',
 }
-
 vim.pack.add(plugins)
 
 vim.keymap.set('n', '\\', '<Cmd>Neotree reveal<CR>', { desc = 'NeoTree reveal', silent = true })
@@ -17,6 +16,7 @@ require('neo-tree').setup {
       mappings = {
         ['\\'] = 'close_window',
       },
+      width = 35,
     },
   },
 }

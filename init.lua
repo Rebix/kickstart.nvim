@@ -23,10 +23,10 @@ do
   --  For more options, you can see `:help option-list`
 
   -- Load custom modular configurations (options, keymaps, and autocommands)
-  require("rebix.config.options")
-  require("rebix.config.keymaps")
-  require("rebix.config.autocmds")
-  -- require("rebix.plugins")
+  require 'rebix.config.options'
+  require 'rebix.config.keymaps'
+  require 'rebix.config.autocmds'
+  require 'rebix.plugins'
 
   -- Make line numbers default
   vim.o.number = true
@@ -306,15 +306,15 @@ do
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
   -- vim.pack.add { gh 'folke/tokyonight.nvim' }
-  vim.pack.add { gh "catppuccin/nvim" }
-  require("catppuccin").setup({ variant = "mocha"})
+  -- vim.pack.add { gh "catppuccin/nvim" }
+  -- require("catppuccin").setup({ variant = "mocha"})
 
-  vim.pack.add { gh "rose-pine/neovim" }
-  require("rose-pine").setup({variant = "pine"})
-
-  -- Load the colorscheme here.
-  -- Like many other themes, this one has different styles, and you could load
-  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  vim.pack.add { gh 'rose-pine/neovim' }
+  require('rose-pine').setup { variant = 'pine', styles = {
+    bold = true,
+    italic = false,
+    transparency = false,
+  } }
   vim.cmd.colorscheme 'rose-pine'
 
   -- Highlight todo, notes, etc in comments
@@ -457,7 +457,7 @@ do
       -- Jump to the definition of the word under your cursor.
       -- This is where a variable was first declared, or where a function is defined, etc.
       -- To jump back, press <C-t>.
-      vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
+      vim.keymap.set('n', 'gd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
 
       -- Fuzzy find all the symbols in your current document.
       -- Symbols are things like variables, functions, types, etc.
@@ -471,6 +471,7 @@ do
       -- Useful when you're not sure what type a variable is and you want to see
       -- the definition of its *type*, not where it was *defined*.
       vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
+      vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action)
     end,
   })
 
@@ -611,14 +612,14 @@ do
   local servers = {
     -- clangd = {},
     -- gopls = {},
-    -- pyright = {},
+    pyright = {},
     -- rust_analyzer = {},
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
     --    https://github.com/pmizio/typescript-tools.nvim
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+    ts_ls = {},
 
     stylua = {}, -- Used to format Lua code
 
@@ -699,8 +700,10 @@ do
     format_on_save = function(bufnr)
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
+        lua = true,
+        python = true,
+        typescript = true,
+        javascript = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 500 }
@@ -716,9 +719,11 @@ do
       -- rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
       -- python = { "isort", "black" },
+      python = { 'ruff' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      javascript = { 'prettierd', 'prettier', stop_after_first = true },
+      typescript = { 'prettierd', 'prettier', stop_after_first = true },
     },
   }
 
@@ -821,7 +826,8 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'python', 'javascript', 'typescript', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers =
+    { 'bash', 'python', 'javascript', 'typescript', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
@@ -887,7 +893,8 @@ do
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
   -- require 'kickstart.plugins.autopairs'
-  require 'rebix.plugins.neo-tree'
+  -- require 'rebix.plugins.neo-tree'
+  require 'rebix.plugins'
   -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
